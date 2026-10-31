@@ -1,0 +1,21 @@
+# Default platform configuration. Override per experiment, not by editing code.
+
+data:
+  store_path: data/processed
+  cache_path: data/cache
+  default_provider: yfinance   # prototyping only
+
+universe:
+  tickers: [SPY, QQQ, AAPL, MSFT, XOM, JNJ, GLD, TLT]
+  benchmark: SPY
+
+backtest:
+  initial_capital: 10000
+  commission_bps: 1.0      # per trade, in basis points (1 bp = 0.01%)
+  slippage_bps: 2.0        # assumed cost of not getting the exact price
+  rebalance: monthly
+
+risk:
+  trading_days_per_year: 252
+  risk_free_rate: 0.0
+  var_confidence: 0.95
