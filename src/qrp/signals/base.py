@@ -20,5 +20,4 @@ class Signal(ABC):
     """
 
     @abstractmethod
-    def compute(self, prices: pd.DataFrame) -> pd.DataFrame:
-        ...
+    def compute(self, prices: pd.DataFrame) -> pd.DataFrame: ...

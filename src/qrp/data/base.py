@@ -20,5 +20,6 @@ class DataProvider(ABC):
     """
 
     @abstractmethod
-    def get_prices(self, tickers: list[str], start: str, end: str | None = None) -> pd.DataFrame:
-        ...
+    def get_prices(
+        self, tickers: list[str], start: str, end: str | None = None
+    ) -> pd.DataFrame: ...

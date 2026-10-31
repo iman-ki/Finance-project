@@ -13,6 +13,8 @@ A new idea is added by decorating a class; the core code never changes.
 
 from __future__ import annotations
 
+import importlib
+import pkgutil
 from collections.abc import Callable
 from typing import TypeVar
 
@@ -41,3 +43,14 @@ class Registry:
 
     def names(self) -> list[str]:
         return sorted(self._items)
+
+
+def autodiscover(package: str, path: list[str], skip: tuple[str, ...] = ("base",)) -> None:
+    """Import every module in a plugin package so its decorators run.
+
+    Called from a package's __init__, this is what makes "drop a file in the folder"
+    enough to add a plugin: no import list to keep up to date.
+    """
+    for module in pkgutil.iter_modules(path):
+        if module.name not in skip and not module.name.startswith("_"):
+            importlib.import_module(f"{package}.{module.name}")

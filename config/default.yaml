@@ -1,21 +1,35 @@
 # Default platform configuration. Override per experiment, not by editing code.
 
 data:
-  store_path: data/processed
-  cache_path: data/cache
-  default_provider: yfinance   # prototyping only
+  provider: alphavantage
+  # weekly | monthly. Both are free, dividend-adjusted and go back to 1999.
+  # Daily history is a premium Alpha Vantage feature (see docs/decisions/0002).
+  frequency: weekly
+  start: "1999-01-01"      # earliest available is late 1999; the provider trims to what exists
+  end: null                # null = up to the latest bar
+  raw_path: data/raw       # untouched API responses, so results can be re-derived offline
+  cache_max_age_hours: 24  # re-download only when the saved copy is older than this
 
 universe:
-  tickers: [SPY, QQQ, AAPL, MSFT, XOM, JNJ, GLD, TLT]
+  # Tickers the strategy may trade. Add more as strategies arrive, e.g.
+  # [SPY, QQQ, AAPL, MSFT, XOM, JNJ, GLD, TLT]. The free key allows 25 requests/day.
+  tickers: [SPY]
   benchmark: SPY
+
+strategy:
+  name: buy_and_hold
+  params:
+    ticker: SPY
 
 backtest:
   initial_capital: 10000
   commission_bps: 1.0      # per trade, in basis points (1 bp = 0.01%)
   slippage_bps: 2.0        # assumed cost of not getting the exact price
-  rebalance: monthly
+  rebalance: monthly       # every_period | weekly | monthly | quarterly | yearly
 
 risk:
-  trading_days_per_year: 252
-  risk_free_rate: 0.0
+  risk_free_rate: 0.0      # annual
   var_confidence: 0.95
+
+reporting:
+  output_path: reports

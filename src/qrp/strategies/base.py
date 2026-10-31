@@ -21,5 +21,4 @@ class Strategy(ABC):
     """
 
     @abstractmethod
-    def target_weights(self, prices: pd.DataFrame) -> pd.DataFrame:
-        ...
+    def target_weights(self, prices: pd.DataFrame) -> pd.DataFrame: ...
