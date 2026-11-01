@@ -1,5 +1,8 @@
-"""Risk and performance metrics: volatility, drawdown, Sharpe, VaR/CVaR, beta."""
+"""Stage 3, risk management: review and limit a strategy's weights before they are traded.
 
-from qrp.risk.metrics import summary
+Every module in this folder is imported automatically, so a new risk model is just a new file.
+"""
 
-__all__ = ["summary"]
+from qrp.core.registry import autodiscover
+
+autodiscover(__name__, __path__)

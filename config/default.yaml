@@ -1,35 +1,44 @@
 # Default platform configuration. Override per experiment, not by editing code.
+# Sections follow the pipeline: data -> strategy -> risk_management -> backtest -> evals.
 
+# 1. Data
 data:
-  provider: alphavantage
-  # weekly | monthly. Both are free, dividend-adjusted and go back to 1999.
-  # Daily history is a premium Alpha Vantage feature (see docs/decisions/0002).
-  frequency: weekly
-  start: "1999-01-01"      # earliest available is late 1999; the provider trims to what exists
+  provider: yfinance       # yfinance | alphavantage (see docs/decisions/0003)
+  frequency: daily         # daily | weekly | monthly. alphavantage free key: weekly or monthly only
+  start: "1993-01-01"      # each ticker starts when its own history does (SPY: 1993-01-29)
   end: null                # null = up to the latest bar
   raw_path: data/raw       # untouched API responses, so results can be re-derived offline
   cache_max_age_hours: 24  # re-download only when the saved copy is older than this
 
 universe:
   # Tickers the strategy may trade. Add more as strategies arrive, e.g.
-  # [SPY, QQQ, AAPL, MSFT, XOM, JNJ, GLD, TLT]. The free key allows 25 requests/day.
+  # [SPY, QQQ, AAPL, MSFT, XOM, JNJ, GLD, TLT]. (Alpha Vantage's free key: 25 requests/day.)
   tickers: [SPY]
   benchmark: SPY
 
+# 2. Strategy creation
 strategy:
   name: buy_and_hold
   params:
     ticker: SPY
 
+# 3. Risk management: rules applied to the strategy's weights before trading
+risk_management:
+  model: limits
+  params:
+    long_only: true            # no short positions
+    max_weight: 1.0            # largest position in one asset, as a fraction of capital
+    max_gross_exposure: 1.0    # sum of all positions; 1.0 = fully invested, no leverage
+
+# 4. Simulation / backtesting
 backtest:
   initial_capital: 10000
   commission_bps: 1.0      # per trade, in basis points (1 bp = 0.01%)
   slippage_bps: 2.0        # assumed cost of not getting the exact price
   rebalance: monthly       # every_period | weekly | monthly | quarterly | yearly
 
-risk:
-  risk_free_rate: 0.0      # annual
+# 5. Evals
+evals:
+  risk_free_rate: 0.0      # annual, used by the Sharpe ratio
   var_confidence: 0.95
-
-reporting:
   output_path: reports

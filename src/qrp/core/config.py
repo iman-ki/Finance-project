@@ -14,6 +14,7 @@ ENV_FILE = PROJECT_ROOT / ".env"
 
 # Used to annualize per-period numbers (e.g. volatility * sqrt(periods)).
 PERIODS_PER_YEAR = {"daily": 252, "weekly": 52, "monthly": 12}
+PERIOD_NAMES = {"daily": "day", "weekly": "week", "monthly": "month"}
 
 
 def load_config(path: Path | str = DEFAULT_CONFIG) -> dict[str, Any]:

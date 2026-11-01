@@ -1,4 +1,6 @@
-"""Performance and risk metrics. Each takes a series of per-period simple returns.
+"""Evaluation metrics: performance and realized risk of a simulated run.
+
+Each takes a series of per-period simple returns.
 
 `periods_per_year` converts per-period numbers to yearly ones: 52 for weekly data,
 12 for monthly, 252 for daily (see qrp.core.config.PERIODS_PER_YEAR).

@@ -9,7 +9,7 @@ Sum of squared deviations = 0.022675, sample variance = 0.022675 / 3.
 import pandas as pd
 import pytest
 
-from qrp.risk import metrics
+from qrp.evals import metrics
 
 R = pd.Series([0.10, -0.05, 0.02, -0.10])
 VARIANCE = 0.022675 / 3

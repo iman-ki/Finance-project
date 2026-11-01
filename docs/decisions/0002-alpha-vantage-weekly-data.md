@@ -1,6 +1,6 @@
 # 0002: Alpha Vantage, weekly adjusted prices, full history
 
-**Status:** accepted (2026-10-31)
+**Status:** accepted (2026-10-31). No longer the default: see [0003](0003-yfinance-as-default-provider.md).
 
 ## Context
 Alpha Vantage replaces yfinance as the data source. Its free key was tested on 2026-10-31:

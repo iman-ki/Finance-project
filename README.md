@@ -8,31 +8,31 @@ A long-term, institutional-style research platform for safely backtesting and an
 ## Architecture
 
 ```
-data  ->  signals  ->  strategies  ->  backtest  ->  risk  ->  reporting
-(prices)  (scores)    (weights)       (simulated     (metrics)  (charts,
-                                       P&L + costs)             reports)
+1. data  ->  2. strategy creation  ->  3. risk management  ->  4. simulation  ->  5. evals
+(prices)     (target weights)          (allowed weights)        (returns after    (metrics,
+                                                                 costs)            reports, app)
 ```
 
 Each stage only talks to the next through a small contract (see `docs/architecture.md`). A new idea is one new file plus a registry decorator.
 
 ## Layout
 
-| Path | Purpose |
-|---|---|
-| `src/qrp/cli.py`, `pipeline.py` | Command line and the run that wires every stage together |
-| `src/qrp/core/` | Plugin registry, config loading |
-| `src/qrp/data/` | Data providers and storage (contract: `DataProvider`) |
-| `src/qrp/signals/` | Math plugins that score assets (contract: `Signal`) |
-| `src/qrp/strategies/` | Turn signals into target weights (contract: `Strategy`) |
-| `src/qrp/backtest/` | Simulation engine and cost models |
-| `src/qrp/risk/` | Volatility, drawdown, Sharpe, VaR/CVaR, beta |
-| `src/qrp/portfolio/` | Weighting schemes and constraints |
-| `src/qrp/reporting/` | Charts and performance reports |
-| `config/` | YAML settings; experiments change config, not code |
-| `data/` | Local data (git-ignored): `raw/`, `processed/`, `cache/` |
-| `notebooks/` | Learning and exploration |
-| `docs/` | Architecture, decisions, learning log |
-| `tests/` | Every metric checked against hand-computed examples |
+| Path | Stage | Purpose |
+|---|---|---|
+| `src/qrp/data/` | 1 | Data providers and storage (contract: `DataProvider`) |
+| `src/qrp/strategies/` | 2 | Strategies that turn prices into target weights (contract: `Strategy`) |
+| `src/qrp/strategies/signals/` | 2 | Math building blocks that score assets (contract: `Signal`) |
+| `src/qrp/risk/` | 3 | Risk models that review and limit weights before trading (contract: `RiskModel`) |
+| `src/qrp/backtest/` | 4 | Simulation engine: costs, drift, no look-ahead |
+| `src/qrp/evals/` | 5 | Metrics (CAGR, volatility, Sharpe, drawdown, VaR/CVaR) and reports |
+| `src/qrp/pipeline.py` | 1-5 | Runs the stages in order from a config |
+| `src/qrp/cli.py`, `app.py` | | Command line and interactive app, both over the pipeline |
+| `src/qrp/core/` | | Plugin registry, config loading |
+| `config/` | | YAML settings, one section per stage; experiments change config, not code |
+| `data/` | | Local data (git-ignored): `raw/`, `processed/`, `cache/` |
+| `notebooks/` | | Learning and exploration |
+| `docs/` | | Architecture, decisions, learning log |
+| `tests/` | | Every number checked against hand-computed examples |
 
 ## Setup
 
@@ -43,11 +43,9 @@ pip install -e ".[dev]"
 pytest
 ```
 
-Data comes from Alpha Vantage. Put your free key in `.env` (see `.env.example`):
-
-```
-ALPHAVANTAGE_API_KEY=your-key
-```
+Data comes from Yahoo Finance via `yfinance` (free, no key; prototyping only). To use Alpha Vantage
+instead, set `data.provider: alphavantage` (and `frequency: weekly`) in the config and put your key in
+`.env` (see `.env.example`). Adding another provider is one file in `src/qrp/data/providers/`.
 
 ## Usage
 
@@ -55,13 +53,21 @@ ALPHAVANTAGE_API_KEY=your-key
 python -m qrp run                              # uses config/default.yaml
 python -m qrp run --config config/my_test.yaml # another experiment
 python -m qrp run --refresh                    # force a fresh download
+python -m qrp app                              # interactive app in the browser
 ```
+
+The app (`src/qrp/app.py`, Streamlit) has three tabs: **Backtest** (pick tickers, strategy,
+costs and dates; interactive charts and metrics vs the benchmark; save the run as a report),
+**Data** (growth of 100, per-ticker stats, correlations) and **Project map** (the pipeline,
+which parts exist and which are planned, the roadmap). New strategies appear in it
+automatically, with one input per constructor argument.
 
 Each run prints the metrics and writes a folder under `reports/` with `report.md`, the
 equity and drawdown charts, `metrics.csv`, `returns.csv` and a copy of the config used.
 
-Data is weekly, dividend-adjusted, from late 1999 (the free key has no daily history;
-see `docs/decisions/0002-alpha-vantage-weekly-data.md`).
+Data is daily and split/dividend-adjusted, from 1993 for SPY (see
+`docs/decisions/0003-yfinance-as-default-provider.md`). Downloads are saved in `data/raw/`
+and reused for 24 hours.
 
 ## Roadmap
 
