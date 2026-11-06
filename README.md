@@ -1,16 +1,16 @@
 # Modular Quantitative Research Platform (QRP)
 
-A long-term, institutional-style research platform for safely backtesting and analyzing financial strategies. Data collection, mathematical modeling, trade simulation and risk management are independent modules, so new math (signals, models, risk measures) can be added as plugins without rewriting the core.
+This project is a long-term, research program for safely backtesting and analyzing financial strategies. Data collection, mathematical modeling, trade simulation and risk management are independent modules, so new math (signals, models, risk measures) can be added as plugins without rewriting the core.
 
-**Purpose:** learn finance, math and physics by building. The platform grows as the knowledge does.
-**Principle:** reliability over returns. A result is only worth something if the test behind it is honest.
+**Purpose:** Help the user test strategies while learning finance and math. The platform grows as the knowledge does.
+**Principle:** reliability over returns. Human leads the build, Claude helps speed the build. A result is only worth something if the user understands the reason of that result and if the test behind it is honest.
 
 ## Architecture
 
 ```
 1. data  ->  2. strategy creation  ->  3. risk management  ->  4. simulation  ->  5. evals
 (prices)     (target weights)          (allowed weights)        (returns after    (metrics,
-                                                                 costs)            reports, app)
+                                                                  costs)            reports, app)
 ```
 
 Each stage only talks to the next through a small contract (see `docs/architecture.md`). A new idea is one new file plus a registry decorator.
@@ -43,9 +43,9 @@ pip install -e ".[dev]"
 pytest
 ```
 
-Data comes from Yahoo Finance via `yfinance` (free, no key; prototyping only). To use Alpha Vantage
-instead, set `data.provider: alphavantage` (and `frequency: weekly`) in the config and put your key in
-`.env` (see `.env.example`). Adding another provider is one file in `src/qrp/data/providers/`.
+At the minute data comes from Yahoo Finance via `yfinance`. 
+Then I'll use Alpha Vantage API key. If you want to do it set `data.provider: alphavantage` (and `frequency: weekly`) in the config and put your key in `.env` (see `.env.example`). Adding another provider is one file in `src/qrp/data/providers/`.
+At the moment it runs local, but the idea is to run it on a VPC with the Alpha Vantage API Key for autmatic data collection.
 
 ## Usage
 
@@ -79,4 +79,4 @@ and reused for 24 hours.
 6. **Fundamentals and filings:** SEC EDGAR data, LLM-assisted analysis.
 7. **Advanced plugins:** factor models, stochastic models, quantum-inspired optimization.
 
-Not financial advice. Research tooling only.
+Not financial advice. Research and learning tooling only.
