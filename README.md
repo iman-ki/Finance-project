@@ -3,7 +3,7 @@
 This project is a long-term, research program for safely backtesting and analyzing financial strategies. Data collection, mathematical modeling, trade simulation and risk management are independent modules, so new math (signals, models, risk measures) can be added as plugins without rewriting the core.
 
 **Purpose:** Help the user test strategies while learning finance and math. The platform grows as the knowledge does.
-**Principle:** reliability over returns. Human leads the build, Claude helps speed the build. A result is only worth something if the user understands the reason of that result and if the test behind it is honest.
+**Principle:** reliability over returns. Human leads the build, Claude helps speed up the build. A result is only worth something if the user understands the reason of that result and if the test behind it is honest.
 
 ## Architecture
 
