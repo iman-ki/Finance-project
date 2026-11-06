@@ -1,4 +1,4 @@
-# Modular Quantitative Research Platform (QRP)
+# Quantitative Trading Backtesting Engine.
 
 This project is a long-term, research program for safely backtesting and analyzing financial strategies. Data collection, mathematical modeling, trade simulation and risk management are independent modules, so new math (signals, models, risk measures) can be added as plugins without rewriting the core.
 
